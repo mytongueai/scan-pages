@@ -1,19 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Loading Your Scan...</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+
+    img.logo {
+      max-width: 160px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+    }
+
+    .spinner {
+      border: 6px solid #eee;
+      border-top: 6px solid #1976d2;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 16px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .small {
+      font-size: 0.95em;
+      color: #666;
+      margin-top: 16px;
+    }
+
+    .bold {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .upgrade-box {
+      margin-top: 24px;
+      background: #fff9e6;
+      border: 1px solid #f7d26b;
+      padding: 16px;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .upgrade-box h3 {
+      margin: 0 0 8px;
+      color: #d48900;
+    }
+
+    .upgrade-box p {
+      margin: 4px 0 12px;
+      font-size: 0.95em;
+    }
+
+    .upgrade-btn {
+      background-color: #1976d2;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .progress-bar {
+      width: 80%;
+      height: 10px;
+      margin: 20px auto;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: #1976d2;
+      animation: progressAnim 180s linear forwards;
+    }
+
+    @keyframes progressAnim {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+  </style>
+</head>
 <body>
 
-  <!-- ✅ Logo -->
   <img src="https://raw.githubusercontent.com/mytongueai/assets/refs/heads/main/mytongueaiLogo.png" alt="MyTongueAI Logo" class="logo" />
-
-  <!-- ✅ Headline + Spinner -->
+  
   <h2>Hold on! We’re preparing your scan report...</h2>
   <div class="spinner"></div>
 
-  <!-- ✅ Helpful message -->
-  <p id="initialMsg">
-    This page will automatically refresh once your scan is ready.  
-    You can save this link and come back later if needed.
-  </p>
+  <p id="initialMsg">This page will automatically refresh once your scan is ready.  
+  You can save this link and come back later if needed.</p>
 
-  <!-- ✅ Dynamic fallback message (hidden by default) -->
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <!-- Upgrade Offer -->
+  <div class="upgrade-box">
+    <h3>Want Full Results + Trends?</h3>
+    <p>Upgrade now to unlock:</p>
+    <ul style="text-align: left; font-size: 0.95em; margin: 0 auto 12px; padding: 0; list-style: none;">
+      <li>✓ Full Top + Bottom Scan</li>
+      <li>✓ 3 Bonus Scans</li>
+      <li>✓ Trendline Report</li>
+    </ul>
+    <p><strong>Only $2.99 (50% off)</strong> – Use code <strong>SCAN299</strong></p>
+    <a class="upgrade-btn" href="https://mytongueai.com/upgrade" target="_blank">Upgrade Now</a>
+  </div>
+
+  <!-- Delayed Fallback Message -->
   <div id="fallback" style="display:none;">
     <p class="bold">After 3 minutes with no result?</p>
     <p class="small">
@@ -26,30 +143,6 @@
     </p>
   </div>
 
-  <!-- ✅ Progress loader -->
-  <style>
-    .progress-bar {
-      width: 80%;
-      height: 10px;
-      margin: 20px auto;
-      background: #eee;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: #1976d2;
-      animation: progressAnim 180s linear forwards;
-    }
-    @keyframes progressAnim {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
-  </style>
-  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
-
-  <!-- ✅ Autopoll script -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const scanId = params.get("id");
@@ -86,3 +179,4 @@
   </script>
 
 </body>
+</html>
