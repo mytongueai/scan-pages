@@ -1,54 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Loading Your Scan...</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .spinner {
-      border: 6px solid #eee;
-      border-top: 6px solid #1976d2;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    img.logo {
-      max-width: 160px;
-      margin-bottom: 16px;
-    }
-
-    .small {
-      font-size: 0.95em;
-      color: #666;
-      margin-top: 16px;
-    }
-
-    .bold {
-      font-weight: bold;
-      margin-top: 8px;
-    }
-  </style>
-</head>
 <body>
 
   <!-- ✅ Logo -->
@@ -59,29 +8,81 @@
   <div class="spinner"></div>
 
   <!-- ✅ Helpful message -->
-  <p>
+  <p id="initialMsg">
     This page will automatically refresh once your scan is ready.  
     You can save this link and come back later if needed.
   </p>
 
-  <p class="bold">After 3 minutes with no result?</p>
-  <p class="small">
-    Please check your email — you should receive the full report there.<br />
-    Still no email? Contact us:
-    <br />
-    📧 <a href="mailto:support@mytongueai.com">support@mytongueai.com</a>
-    <br />
-    📱 <a href="tel:+17146237422">(714) 623-7422</a>
-  </p>
+  <!-- ✅ Dynamic fallback message (hidden by default) -->
+  <div id="fallback" style="display:none;">
+    <p class="bold">After 3 minutes with no result?</p>
+    <p class="small">
+      Please check your email — you should receive the full report there.<br />
+      Still no email? Contact us:
+      <br />
+      📧 <a href="mailto:support@mytongueai.com">support@mytongueai.com</a>
+      <br />
+      📱 <a href="tel:+17146237422">(714) 623-7422</a>
+    </p>
+  </div>
 
-  <!-- Optional: auto-refresh every 30 sec (disabled for now) -->
-  <!-- 
+  <!-- ✅ Progress loader -->
+  <style>
+    .progress-bar {
+      width: 80%;
+      height: 10px;
+      margin: 20px auto;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: #1976d2;
+      animation: progressAnim 180s linear forwards;
+    }
+    @keyframes progressAnim {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+  </style>
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <!-- ✅ Autopoll script -->
   <script>
+    const params = new URLSearchParams(window.location.search);
+    const scanId = params.get("id");
+    const destinationURL = `https://mytongueai.github.io/scan-pages/scans/${scanId}.html`;
+
+    const maxWaitTime = 180000; // 3 mins
+    const checkInterval = 5000; // 5 sec
+    let elapsed = 0;
+
     setTimeout(() => {
-      window.location.reload();
-    }, 30000); // 30 sec
+      document.getElementById('fallback').style.display = 'block';
+    }, 5000);
+
+    async function pollForScan() {
+      try {
+        const res = await fetch(destinationURL, { method: 'HEAD' });
+        if (res.ok) {
+          window.location.href = destinationURL;
+          return;
+        }
+      } catch (e) {}
+
+      elapsed += checkInterval;
+      if (elapsed < maxWaitTime) {
+        setTimeout(pollForScan, checkInterval);
+      }
+    }
+
+    if (scanId) {
+      pollForScan();
+    } else {
+      document.getElementById('initialMsg').innerText = "Missing scan ID. Please resubmit your scan.";
+    }
   </script>
-  -->
 
 </body>
-</html>
