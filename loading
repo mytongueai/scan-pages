@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Loading Your Scan...</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+      .spinner {
+        border: 6px solid #eee;
+        border-top: 6px solid #1976d2;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Hold on! We’re preparing your scan report…</h2>
+    <div class="spinner"></div>
+    <p>This usually takes under a minute.<br />This page will refresh automatically.</p>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const scanId = params.get("id");
+
+      const targetUrl = `https://mytongueai.github.io/scan-pages/scans/${scanId}.html`;
+      const rawUrl = `https://raw.githubusercontent.com/mytongueai/scan-pages/main/scans/${scanId}.html`;
+
+      async function checkAndRedirect() {
+        try {
+          const res = await fetch(rawUrl, { method: "HEAD" });
+          if (res.status === 200) {
+            window.location.href = targetUrl;
+          }
+        } catch (err) {
+          console.error("Error checking file:", err);
+        }
+      }
+
+      // Initial check, then every 10 seconds
+      checkAndRedirect();
+      setInterval(checkAndRedirect, 10000);
+    </script>
+  </body>
+</html>
